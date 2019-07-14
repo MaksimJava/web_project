@@ -2,7 +2,7 @@
 <head>
     <title>Home Freemarker</title>
 </head>
-    <body>
-        ${msg}
-    </body>
+<body>
+    ${msg}
+</body>
 </html>

@@ -2,15 +2,17 @@ package ru.example.max.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import ru.example.max.model.User;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class MainController {
+
+    static List<User> users = new ArrayList<>();
+
     @GetMapping("/{name}")
     public String view(@PathVariable("name") String name, Model model) {
         model.addAttribute("msg", "Hello " + name + "!");
@@ -25,12 +27,19 @@ public class MainController {
 
     @GetMapping("/users")
     public String getUsers(Model model) {
-        Collection<User> users = new ArrayList<>();
-        users.add(new User("John", "Smith", "js@test.com"));
-        users.add(new User("Mike", "Johnson", "mj@test.com"));
-
         model.addAttribute("users", users);
         return "/users";
+    }
+
+    @GetMapping("/users/new")
+    public String getSignUp() {
+        return "sign_up";
+    }
+
+    @PostMapping("/users/new")
+    public String signUp(@ModelAttribute User user) {
+        users.add(user);
+        return  "redirect:/users";
     }
 
 }

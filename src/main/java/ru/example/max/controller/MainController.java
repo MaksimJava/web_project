@@ -1,21 +1,33 @@
 package ru.example.max.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.example.max.dao.UserDao;
 import ru.example.max.model.User;
 
 import javax.validation.Valid;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 public class MainController {
 
-    static List<User> users = new ArrayList<>();
+    @Autowired
+    private UserDao userDao;
 
-    @GetMapping("/{name}")
+    private static List<User> users = new ArrayList<>();
+
+    @GetMapping("/")
+    public String main(@RequestParam(value = "name", required = false, defaultValue = "user") String name, Model model) {
+        model.addAttribute("msg", "Hello " + name + "!");
+        return "/index";
+    }
+
+    @GetMapping("/view/{name}")
     public String view(@PathVariable("name") String name, Model model) {
         model.addAttribute("msg", "Hello " + name + "!");
         return "/index";
@@ -28,8 +40,8 @@ public class MainController {
     }
 
     @GetMapping("/users")
-    public String getUsers(Model model) {
-        model.addAttribute("users", users);
+    public String getUsers(Model model) throws SQLException {
+        model.addAttribute("users", userDao.getAll());
         return "/users";
     }
 

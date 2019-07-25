@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.example.max.dao.UserDao;
 import ru.example.max.model.User;
+import ru.example.max.util.UserValidator;
 
 import javax.validation.Valid;
 import java.sql.SQLException;
@@ -19,10 +20,14 @@ public class MainController {
     @Autowired
     private UserDao userDao;
 
-    private static List<User> users = new ArrayList<>();
+    @Autowired
+    private UserValidator userValidator;
 
     @GetMapping("/")
-    public String main(@RequestParam(value = "name", required = false, defaultValue = "user") String name, Model model) {
+    public String main(
+            @RequestParam(value = "name", required = false, defaultValue = "user") String name,
+            Model model
+    ) {
         model.addAttribute("msg", "Hello " + name + "!");
         return "/index";
     }
@@ -52,11 +57,15 @@ public class MainController {
     }
 
     @PostMapping("/users/new")
-    public String signUp(@ModelAttribute @Valid User user, BindingResult result) {
+    public String signUp(
+            @ModelAttribute @Valid User user,
+            BindingResult result
+    ) throws SQLException {
+        userValidator.validate(user, result);
         if(result.hasErrors()) {
             return "/sign_up";
         }
-        users.add(user);
+        userDao.add(user);
         return  "redirect:/users";
     }
 

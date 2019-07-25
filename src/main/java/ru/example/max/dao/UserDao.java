@@ -42,7 +42,8 @@ public class UserDao {
 
     public List<User> getAll() throws SQLException {
         List<User> users = new ArrayList<>();
-        PreparedStatement ps = connection.prepareStatement("select * from users");
+        PreparedStatement ps = connection.prepareStatement(
+                            "select * from users");
         ResultSet rs = ps.executeQuery();
         while(rs.next()) {
             User user = new User();
@@ -52,5 +53,33 @@ public class UserDao {
             users.add(user);
         }
         return users;
+    }
+
+    public User getUserFromEmail(String email) {
+        try {
+            PreparedStatement ps = connection.prepareStatement(
+                    "select * from users where email = ?");
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                User user = new User();
+                user.setName(rs.getString(1));
+                user.setSurname(rs.getString(2));
+                user.setEmail(rs.getString(3));
+                return user;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void add(User user) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement(
+                "insert into users values ( ?, ?, ? )");
+        ps.setString(1, user.getName());
+        ps.setString(2, user.getSurname());
+        ps.setString(3, user.getEmail());
+        ps.execute();
     }
 }

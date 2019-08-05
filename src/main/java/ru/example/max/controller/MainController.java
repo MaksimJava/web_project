@@ -1,13 +1,12 @@
 package ru.example.max.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.example.max.dao.UserDao;
 import ru.example.max.model.User;
+import ru.example.max.service.UserService;
 import ru.example.max.util.UserValidator;
 
 import javax.validation.Valid;
@@ -17,8 +16,7 @@ import java.sql.SQLException;
 public class MainController {
 
     @Autowired
-    @Qualifier("hibernateUserDao")
-    private UserDao userDao;
+    private UserService userService;
 
     @Autowired
     private UserValidator userValidator;
@@ -46,7 +44,7 @@ public class MainController {
 
     @GetMapping("/users")
     public String getUsers(Model model) throws SQLException {
-        model.addAttribute("users", userDao.getAll());
+        model.addAttribute("users", userService.getAll());
         return "/users";
     }
 
@@ -65,7 +63,7 @@ public class MainController {
         if(result.hasErrors()) {
             return "/sign_up";
         }
-        userDao.add(user);
+        userService.add(user);
         return  "redirect:/users";
     }
 

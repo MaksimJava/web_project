@@ -7,13 +7,13 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.example.max.dao.UserDao;
 import ru.example.max.model.User;
+import ru.example.max.service.UserService;
 
 @Component
 public class UserValidator implements Validator {
 
     @Autowired
-    @Qualifier("hibernateUserDao")
-    private UserDao userDao;
+    private UserService userService;
 
     @Override
     public boolean supports(Class<?> aClass) {
@@ -23,7 +23,7 @@ public class UserValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         User user = (User) target;
-        if (userDao.getUserFromEmail(user.getEmail()) != null) {
+        if (userService.getUserFromEmail(user.getEmail()) != null) {
             errors.rejectValue(
                     "email", "", "This email is already in use");
         }

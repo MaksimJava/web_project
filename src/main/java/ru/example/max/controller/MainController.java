@@ -3,32 +3,16 @@ package ru.example.max.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import ru.example.max.model.User;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 import ru.example.max.service.UserService;
-import ru.example.max.util.UserValidator;
-
-import javax.validation.Valid;
-import java.sql.SQLException;
 
 @Controller
 public class MainController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserValidator userValidator;
-
-    @GetMapping("/")
-    public String main(
-            @RequestParam(value = "name", required = false, defaultValue = "user") String name,
-            Model model
-    ) {
-        model.addAttribute("msg", "Hello " + name + "!");
-        return "/index";
-    }
 
     @GetMapping("/view/{name}")
     public String view(@PathVariable("name") String name, Model model) {
@@ -43,28 +27,9 @@ public class MainController {
     }
 
     @GetMapping("/users")
-    public String getUsers(Model model) throws SQLException {
+    public String getUsers(Model model) {
         model.addAttribute("users", userService.getAll());
         return "/users";
-    }
-
-    @GetMapping("/users/new")
-    public String getSignUp(Model model) {
-        model.addAttribute("user", new User());
-        return "/sign_up";
-    }
-
-    @PostMapping("/users/new")
-    public String signUp(
-            @ModelAttribute @Valid User user,
-            BindingResult result
-    ) throws SQLException {
-        userValidator.validate(user, result);
-        if(result.hasErrors()) {
-            return "/sign_up";
-        }
-        userService.add(user);
-        return  "redirect:/users";
     }
 
 }

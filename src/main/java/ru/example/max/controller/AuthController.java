@@ -21,15 +21,6 @@ public class AuthController {
     @Autowired
     private UserValidator userValidator;
 
-   /* @GetMapping("/")
-    public String main(
-            @RequestParam(value = "name", required = false, defaultValue = "user") String name,
-            Model model
-    ) {
-        model.addAttribute("msg", "Hello " + name + "!");
-        return "/index";
-    }*/
-
     @GetMapping("/sign_up") ///users/new
     public String getSignUp(Model model) {
         model.addAttribute("user", new User());
@@ -50,7 +41,11 @@ public class AuthController {
     }
 
     @RequestMapping("/login")
-    public String login() {
+    public String login(@RequestParam(name="error", required = false) Boolean error,
+                        Model model) {
+        if (Boolean.TRUE.equals(error)) {
+            model.addAttribute("error", true);
+        }
         return "/auth/sign_in";
     }
 }

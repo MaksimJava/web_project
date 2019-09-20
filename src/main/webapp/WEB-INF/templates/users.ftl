@@ -14,6 +14,6 @@
     <#else>
         <p>No users yet</p>
     </#if>
-
+    <a href="/web_project_war_exploded/logout">Logout</a>
 </body>
 </html>

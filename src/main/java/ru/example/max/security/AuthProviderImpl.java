@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ru.example.max.model.User;
 import ru.example.max.repository.UserRepository;
@@ -21,6 +22,9 @@ public class AuthProviderImpl implements AuthenticationProvider {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = authentication.getName();
@@ -31,7 +35,7 @@ public class AuthProviderImpl implements AuthenticationProvider {
         }
 
         String password = authentication.getCredentials().toString();
-        if (!password.equals(user.getPassword())) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadCredentialsException("Bad credentials");
         }
 

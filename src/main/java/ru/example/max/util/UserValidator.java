@@ -1,11 +1,9 @@
 package ru.example.max.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import ru.example.max.dao.UserDao;
 import ru.example.max.model.User;
 import ru.example.max.service.UserService;
 
